@@ -1,0 +1,46 @@
+:root {
+    --terminal-bg-color: rgb(46, 46, 46);
+}
+
+#terminal {
+    height: 800px;
+    width: 800px;
+
+    word-wrap: break-word;
+    overflow-y: scroll;
+
+    font-size: 36px;
+
+    padding: 2rem;
+
+    border-radius: 8px;
+    
+    color: #fff;
+    background-color: var(--terminal-bg-color);
+}
+
+#terminal::-webkit-scrollbar {
+    width: 8px;
+  }
+
+#terminal::-webkit-scrollbar-track {
+    background: var(--terminal-bg-color);
+}
+
+#terminal::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 8px;
+}
+
+#terminal::-webkit-scrollbar-thumb:hover {
+    background: #777;
+}
+
+.terminal-cursor {
+    background-color: #fff;
+}
+
+#terminal-prompt {
+    display: flex;
+    align-items: center;
+}
