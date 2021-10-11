@@ -13,7 +13,7 @@ describe('Terminal API', () => {
         terminal.mount(document.getElementById('terminal'))
 
         expect(document.body.innerHTML).toBe(
-            '<div id="terminal"><div id="terminal-history"></div><div id="terminal-prompt"><div id="terminal-typing"></div></div></div>'
+            '<div id="terminal" class="terminal"><div class="terminal-history"></div><div class="terminal-prompt"><div class="terminal-typing"></div></div></div>'
         )
     })
 
@@ -23,7 +23,7 @@ describe('Terminal API', () => {
         terminal.out(['Test'])
 
         expect(document.body.innerHTML).toBe(
-            '<div id="terminal"><div id="terminal-history"><div><span style="color: #ffffff;">Test</span></div></div><div id="terminal-prompt"><div id="terminal-typing"></div></div></div>'
+            '<div id="terminal" class="terminal"><div class="terminal-history"><div><span style="color: #ffffff;">Test</span></div></div><div class="terminal-prompt"><div class="terminal-typing"></div></div></div>'
         )
     })
 
@@ -33,7 +33,7 @@ describe('Terminal API', () => {
         terminal.skip()
 
         expect(document.body.innerHTML).toBe(
-            '<div id="terminal"><div id="terminal-history"><div><span style="color: #ffffff;">&nbsp;</span></div></div><div id="terminal-prompt"><div id="terminal-typing"></div></div></div>'
+            '<div id="terminal" class="terminal"><div class="terminal-history"><div><span style="color: #ffffff;">&nbsp;</span></div></div><div class="terminal-prompt"><div class="terminal-typing"></div></div></div>'
         )
     })
 })

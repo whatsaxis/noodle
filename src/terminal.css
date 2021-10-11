@@ -2,7 +2,7 @@
     --terminal-bg-color: rgb(46, 46, 46);
 }
 
-#terminal {
+.terminal {
     height: 800px;
     width: 800px;
 
@@ -19,20 +19,20 @@
     background-color: var(--terminal-bg-color);
 }
 
-#terminal::-webkit-scrollbar {
+.terminal::-webkit-scrollbar {
     width: 8px;
   }
 
-#terminal::-webkit-scrollbar-track {
+.terminal::-webkit-scrollbar-track {
     background: var(--terminal-bg-color);
 }
 
-#terminal::-webkit-scrollbar-thumb {
+.terminal::-webkit-scrollbar-thumb {
     background: #888;
     border-radius: 8px;
 }
 
-#terminal::-webkit-scrollbar-thumb:hover {
+.terminal::-webkit-scrollbar-thumb:hover {
     background: #777;
 }
 
@@ -40,7 +40,7 @@
     background-color: #fff;
 }
 
-#terminal-prompt {
+.terminal-prompt {
     display: flex;
     align-items: center;
 }
