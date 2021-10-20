@@ -3,6 +3,7 @@ Interface & Type Definitions
 */
 
 export type Style = IColorCode | IBackgroundColorCode | IColorTransformation | IColorMisc
+export type StyledText = (string | Style)[]
 
 interface BaseStyle {
     type: 1 | 2 | 3 | 4
@@ -116,7 +117,7 @@ function isStyle(object: any): object is Style {
     return false
 }
 
-export function formatText(text: (string | Style)[]) {
+export function formatText(text: StyledText) {
     let currentColor = Color.WHITE
     let currentBackgroundColor = Background.NONE
     let currentTransformations: IColorTransformation[] = []

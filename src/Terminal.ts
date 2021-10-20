@@ -1,8 +1,14 @@
 import './terminal.css'
 import './assets/fonts.css'
 
-import { Style, formatText } from './Color'
+import { StyledText, formatText } from './Color'
 import { render } from './Render'
+
+interface AnimationOptions {
+    repeat?: boolean | number,
+    block?: boolean,
+    finalFrame?: StyledText | null
+}
 
 class Terminal {
     private domElement: HTMLElement | null = null
@@ -32,7 +38,7 @@ class Terminal {
         this.domElement.append(this.terminalPrompt)
     }
 
-    out(message: (string | Style)[]) {
+    out(message: StyledText) {
         this.checkMount()
 
         this.history.push(formatText(message))
@@ -48,7 +54,7 @@ class Terminal {
     }
 
     async input(callback: (value: string) => void, prepend: string = '') {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
             this.checkMount()
 
             while (this.terminalPrompt.children.length !== 1) {
@@ -101,7 +107,7 @@ class Terminal {
 
                     /*
                         Make sure to call the callback AFTER the promise
-                        * is resolved, so that the value of the input is pushed
+                        is resolved, so that the value of the input is pushed
                         first, and then anything that comes in the callback
                     */
                    
@@ -131,6 +137,68 @@ class Terminal {
     
             render(command, this.terminalTyping)
 
+        })
+    }
+
+    async animate(animation: StyledText[], update: number, options: AnimationOptions = { repeat: true, block: false, finalFrame: null }) {
+        const { repeat, block, finalFrame } = options
+
+        return new Promise((resolve) => {
+            const domAnimation = document.createElement('div')
+
+            let stopped = false
+            let frame = 0
+            let repeats = typeof repeat === 'number' ? repeat : null
+
+            if (!block) resolve(true)
+
+            // Render initial frame
+            domAnimation.innerHTML = formatText(animation[0]).innerHTML
+    
+            // Timer Logic
+            const timer = setInterval(() => {
+                if (stopped === true) {
+                    clearInterval(timer)
+                    resolve(true)
+                    return
+                }
+        
+                if (!(frame + 1 > animation.length - 1)) frame++
+                else {
+                    // Check for repeat option
+                    if (repeat === true) frame = 0
+                    else if (repeats !== null) {
+                        if (repeats > 0) {
+                            frame = 0
+                            repeats--
+                        } else {
+                            // Stop animation
+
+                            if (finalFrame !== null) domAnimation.innerHTML = formatText(finalFrame).innerHTML
+
+                            clearInterval(timer)
+                            resolve(true)
+                            return
+                        }
+                    }
+                    else {
+                        // Stop animation
+
+                        if (finalFrame !== null) domAnimation.innerHTML = formatText(finalFrame).innerHTML
+
+                        clearInterval(timer)
+                        resolve(true)
+                        return
+                    }
+                }
+        
+                // Actually update the animation
+                domAnimation.innerHTML = formatText(animation[frame]).innerHTML
+            }, update)
+        
+            // Push to history
+            this.history.push(domAnimation)
+            this.renderHistory()
         })
     }
 

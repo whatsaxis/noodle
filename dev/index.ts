@@ -1,7 +1,7 @@
 import Terminal from '../src/Terminal'
 import './reset.css'
 
-import { Color, Transform, Misc, Background } from '../src/Color'
+import { Color, Transform, Misc, Background, StyledText } from '../src/Color'
 
 const terminal = new Terminal()
 terminal.mount(document.getElementById('terminal'))
@@ -19,20 +19,50 @@ terminal.mount(document.getElementById('terminal'))
 // })
 
 async function main() {
-    // terminal.out([Color.PINK, Transform.BOLD, 'Awesome Input Thing'])
-    // terminal.skip()
+    const frames = [
+        [
+            Background.LIGHT_GRAY,
+            ' INITIALISING AXIS SHELL™ '
+        ],
+        [
+            Background.BLUE,
+            '      LOADING ASSETS      '
+        ],
+        [
+            Background.YELLOW,
+            '      LOADING SCRIPTS      '
+        ],
+        [
+            Background.CYAN,
+            '  ESTABLISHING CONNECTION  '
+        ],
+        [
+            Background.LIGHT_GREEN,
+            '       HACKING NASA       '
+        ]
+    ]
 
-    // while (true) {
-    //     // todo add optional thingy before the msg eee
+    await terminal.animate(frames, 1500, { repeat: false, block: true, finalFrame: [ Background.LIGHT_PURPLE, ' WELCOME ' ] })
 
-    //     await terminal.input((value) => {
-    //         terminal.out([Color.RED, 'You Entered: ', Misc.RESET, value])
-    //     }, '> ')
+    terminal.skip()
 
-    //     terminal.skip()
-    // }
+    const commands: { [key: string]: () => void } = {
+        'help': () => terminal.out([Transform.BOLD, Color.PINK, 'Help Command'])
+    }
 
-    terminal.input((value) => console.log(value))
+    while (true) {
+        // todo add optional thingy before the msg eee
+
+        await terminal.input((value) => {
+            if (Object.keys(commands).includes(value)) {
+                commands[value]()
+            } else {
+                terminal.out([value, ' - unknown command'])
+            }
+        }, '$ ')
+
+        terminal.skip()
+    }
 }
 
 main()
