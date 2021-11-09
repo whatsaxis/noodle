@@ -19,6 +19,8 @@ class Terminal {
     private terminalPrompt: HTMLDivElement
     private terminalTyping: HTMLDivElement
 
+    private selected: boolean
+
     mount(element: HTMLElement) {
         this.domElement = element
         this.domElement.classList.add('terminal')
@@ -36,6 +38,18 @@ class Terminal {
 
         this.domElement.append(this.terminalHistory)
         this.domElement.append(this.terminalPrompt)
+
+        this.selected = false
+
+        document.addEventListener('click', (event) => {
+            if (event.target === this.domElement) return
+
+            this.selected = false
+        }, false)
+
+        this.domElement.addEventListener('click', () => {
+            this.selected = true
+        }, false)
     }
 
     out(message: StyledText) {
@@ -116,6 +130,8 @@ class Terminal {
             }
     
             const handler = (e: KeyboardEvent) => {
+                if (!this.selected) return
+
                 if (Object.keys(specialKeys).includes(e.key)) {
                     specialKeys[e.key as keyof typeof specialKeys]()
     

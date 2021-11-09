@@ -6,60 +6,84 @@ import { Color, Transform, Misc, Background, StyledText } from '../src/Color'
 const terminal = new Terminal()
 terminal.mount(document.getElementById('terminal'))
 
-// Object.entries(Color).forEach((k) => {
-//     console.log(k[1])
-//     let name = k[0].replaceAll('_', ' ')
-//     let length = name.length
+interface Command {
+    description: string,
+    execute: () => void
+}
 
-//     for (let i = 0; i < 15 - length; i++) {
-//         name += ' '
-//     }
+interface Directory {
+    name: string,
+    contents: (File | Directory)[]
+}
 
-//     terminal.out([k[1], name, Misc.RESET, Background[k[0] as keyof typeof Color], '   '])
-// })
+interface File {
+    name: string,
+    extension: string
+    contents: string
+}
 
 async function main() {
-    const frames = [
-        [
-            Background.LIGHT_GRAY,
-            ' INITIALISING AXIS SHELL™ '
-        ],
-        [
-            Background.BLUE,
-            '      LOADING ASSETS      '
-        ],
-        [
-            Background.YELLOW,
-            '      LOADING SCRIPTS      '
-        ],
-        [
-            Background.CYAN,
-            '  ESTABLISHING CONNECTION  '
-        ],
-        [
-            Background.LIGHT_GREEN,
-            '       HACKING NASA       '
+    let disk: Directory = {
+        name: '~',
+        contents: [
+            {
+                name: 'os',
+                contents: []
+            },
+            {
+                name: 'user',
+                contents: [
+                    {
+                        name: 'hello',
+                        extension: 'txt',
+                        contents: 'Welcome to Axis Shell!'
+                    }
+                ]
+            }
         ]
-    ]
+    }
 
-    await terminal.animate(frames, 1500, { repeat: false, block: true, finalFrame: [ Background.LIGHT_PURPLE, ' WELCOME ' ] })
+    let currentDirectory = ['~', 'user']
 
-    terminal.skip()
+    const commands: { [key: string]: Command } = {
+        'help': {
+            description: 'Helps you!',
+            execute: () => 
+            {
+                terminal.out([Transform.BOLD, Color.PINK, 'Help Command'])
+                terminal.skip()
 
-    const commands: { [key: string]: () => void } = {
-        'help': () => terminal.out([Transform.BOLD, Color.PINK, 'Help Command'])
+                Object.entries(commands).forEach(cmd => terminal.out([Color.RED, cmd[0], Misc.RESET, ': ', cmd[1].description]))
+            }
+        },
+        'dir': {
+            description: 'Display current folder content',
+            execute: () => {
+                let currentDir: Directory = disk
+
+                console.log(currentDir)
+
+                currentDirectory.forEach(dir => {
+                    currentDir = currentDir.contents.filter(c => c.name === dir)
+                })
+
+                console.log(currentDir)
+
+                terminal.out([ currentDirectory.join('/') ])
+                terminal.skip()
+                terminal.out([ currentDir.contents.toString() ])
+            }
+        }
     }
 
     while (true) {
-        // todo add optional thingy before the msg eee
-
         await terminal.input((value) => {
             if (Object.keys(commands).includes(value)) {
-                commands[value]()
+                commands[value].execute()
             } else {
                 terminal.out([value, ' - unknown command'])
             }
-        }, '$ ')
+        }, currentDirectory.join('/') + ' $ ')
 
         terminal.skip()
     }
